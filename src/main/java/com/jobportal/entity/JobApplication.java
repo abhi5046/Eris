@@ -34,6 +34,6 @@ public class JobApplication extends BaseEntity {
 	
 	@Enumerated(EnumType.STRING)
 	private ApplicationStatus status;
-	 
-	 
+	
+	
 }

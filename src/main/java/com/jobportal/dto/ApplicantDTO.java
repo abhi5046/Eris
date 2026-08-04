@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import com.jobportal.entity.ApplicationStatus;
 
+import lombok.Data;
+
+@Data
 public class ApplicantDTO {
 
 	private Long applicationId;

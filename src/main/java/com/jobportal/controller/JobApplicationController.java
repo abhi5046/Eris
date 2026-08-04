@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jobportal.dto.ApplicantDTO;
 import com.jobportal.dto.AppliedJobDTO;
 import com.jobportal.service.JobApplicationService;
 
@@ -32,6 +33,10 @@ public class JobApplicationController {
 	public String withdrawApplication(@PathVariable Long applicationId) {
 		 jobApplicationService.withdrawApplication(applicationId);
 		 return "Application withdrawn successfully";
+	}
+	@GetMapping("/job/{jobId}/applicants")
+	public List<ApplicantDTO> getapplicants(@PathVariable Long jobId ){
+		return jobApplicationService.getMyApplicant(jobId);
 	}
 	
 }

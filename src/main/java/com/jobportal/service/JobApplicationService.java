@@ -2,6 +2,7 @@ package com.jobportal.service;
 
 import java.util.List;
 
+import com.jobportal.dto.ApplicantDTO;
 import com.jobportal.dto.AppliedJobDTO;
 
 public interface JobApplicationService {
@@ -12,5 +13,6 @@ public interface JobApplicationService {
 	
 	void withdrawApplication(Long applicationId);
 	
+	List<ApplicantDTO> getMyApplicant(Long jobId);
 	
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jobportal.dto.ApplicantDTO;
 import com.jobportal.dto.AppliedJobDTO;
 import com.jobportal.entity.ApplicationStatus;
 import com.jobportal.entity.Job;
@@ -102,6 +103,26 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		
 		applicationRepository.save(application);
 		
+	}
+
+	@Override
+	public List<ApplicantDTO> getMyApplicant(Long jobId) {
+		String email=SecurityUtil.getCurrentUserEmail();
+		User recruiter=userRepository.findByEmail(email)
+				.orElseThrow(()->new ResourceNotFoundException("User Not Found"));
+		
+		Job job=jobRepository.findById(jobId).orElseThrow(()->new ResourceNotFoundException("Job not available"));// sorry i am unable to understand how to find rucruter
+		User owner=job.getCreatedBy();
+		if(!owner.getId().equals(recruiter.getId())) {
+			throw new OperationNotAllowedException(
+			        "You are not allowed to view applicants of this job.");
+		}
+		
+		List<JobApplication> applications=applicationRepository.findByJob_Id(jobId);
+		
+		return applications.stream()
+				.map(jobApplicationMapper::toApplicantDTO)
+				.toList();
 	}
 
 }
