@@ -28,20 +28,32 @@ import com.jobportal.validation.ApplicationStatusValidator;
 @Service
 public class JobApplicationServiceImpl implements JobApplicationService {
 
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private JobApplicationRepository applicationRepository;
-
-	@Autowired
-	private JobApplicationMapper jobApplicationMapper;
-
-	@Autowired
-	private JobRepository jobRepository;
 	
-	@Autowired
-	private ApplicationStatusValidator statusValidator;
+	private final UserRepository userRepository;
+
+	
+	private final JobApplicationRepository applicationRepository;
+
+	
+	private final JobApplicationMapper jobApplicationMapper;
+
+
+	private final JobRepository jobRepository;
+	
+	
+	private final ApplicationStatusValidator statusValidator;
+
+	
+	
+	public JobApplicationServiceImpl(UserRepository userRepository, JobApplicationRepository applicationRepository,
+			JobApplicationMapper jobApplicationMapper, JobRepository jobRepository,
+			ApplicationStatusValidator statusValidator) {
+		this.userRepository = userRepository;
+		this.applicationRepository = applicationRepository;
+		this.jobApplicationMapper = jobApplicationMapper;
+		this.jobRepository = jobRepository;
+		this.statusValidator = statusValidator;
+	}
 
 	@Override
 	public void applayForJob(Long id) throws RuntimeException {

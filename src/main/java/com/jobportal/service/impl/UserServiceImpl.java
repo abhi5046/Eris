@@ -16,15 +16,23 @@ import com.jobportal.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 	
-	@Autowired
-	private UserRepository userRepository;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
 	
-	@Autowired
-	private JwtUtil jwtUtil;
 	
+	private final PasswordEncoder passwordEncoder;
+	
+	
+	private final JwtUtil jwtUtil;
+	
+	
+	
+	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.jwtUtil = jwtUtil;
+	}
+
 	@Override
 	public User registerUser(UserDTO dto) {
 		User user = new User();

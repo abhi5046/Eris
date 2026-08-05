@@ -20,13 +20,17 @@ import com.jobportal.util.SecurityUtil;
 
 @Service
 public class JobServiceImpl implements JobService {
-	@Autowired
-	private UserRepository userRepository;
 	
-	@Autowired
-	private JobRepository jobRepository;
+	private final UserRepository userRepository;
 	
 	
+	private final JobRepository jobRepository;
+	
+
+	public JobServiceImpl(UserRepository userRepository, JobRepository jobRepository) {
+		this.userRepository = userRepository;
+		this.jobRepository = jobRepository;
+	}
 
 	@Override
 	public Job createJob(JobDTO jobDTO) {

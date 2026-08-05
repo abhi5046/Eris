@@ -22,9 +22,13 @@ import jakarta.validation.Valid;
 @RequestMapping("/jobs")
 public class JobController {
 	
-	@Autowired
-	private JobService jobService;
+	
+	private final JobService jobService;
 	 
+	public JobController(JobService jobService) {
+		this.jobService = jobService;
+	}
+
 	@PostMapping("/create")
 	public Job createJob(@Valid @RequestBody JobDTO jobDTO) {
 		return jobService.createJob(jobDTO);
