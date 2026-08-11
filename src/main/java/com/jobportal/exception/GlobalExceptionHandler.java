@@ -2,6 +2,7 @@ package com.jobportal.exception;
 
 
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,32 +12,48 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.jobportal.response.ApiResponse;
+import com.jobportal.response.ResponseBuilder;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<String> handleNotFound(ResourceNotFoundException ex){
-		return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
+	public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex){
+
+		return ResponseBuilder.error(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage());
 	}
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleGenric(Exception ex){
+	public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex){
 		ex.printStackTrace();
-		return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+		return ResponseBuilder.error(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage());
 	}
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String,String>> handleValidation(MethodArgumentNotValidException ex){
+	public ResponseEntity<ApiResponse<Map<String,String>>> handleValidation(MethodArgumentNotValidException ex){
 		Map<String, String> errors= new  HashMap<>();
 		ex.getBindingResult().getFieldErrors().forEach(error ->{
 			errors.put(error.getField(), error.getDefaultMessage());
 		});
-		return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+		return ResponseBuilder.error(
+                HttpStatus.BAD_REQUEST,
+                "Validation failed",errors);
 	}
 	@ExceptionHandler(DuplicateApplicationException.class)
-	public ResponseEntity<String> handleDuplicateApplication(DuplicateApplicationException ex){
-		return ResponseEntity.badRequest().body(ex.getMessage());
+	public ResponseEntity<ApiResponse<Void>> handleDuplicateApplication(DuplicateApplicationException ex){
+
+		return ResponseBuilder.error(
+                HttpStatus.CONFLICT,
+                ex.getMessage());
 		
 	}
 	@ExceptionHandler(OperationNotAllowedException.class)
-	public ResponseEntity<String> handleOperationNotAllowed(OperationNotAllowedException ex) {
-		return ResponseEntity.badRequest().body(ex.getMessage());
+	public ResponseEntity<ApiResponse<Void>> handleOperationNotAllowed(OperationNotAllowedException ex) {
+
+		return ResponseBuilder.error(
+                HttpStatus.FORBIDDEN,
+                ex.getMessage());
 	}
 }
