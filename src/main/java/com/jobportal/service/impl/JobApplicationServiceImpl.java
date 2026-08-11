@@ -25,6 +25,9 @@ import com.jobportal.service.JobApplicationService;
 import com.jobportal.util.SecurityUtil;
 import com.jobportal.validation.ApplicationStatusValidator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class JobApplicationServiceImpl implements JobApplicationService {
 
@@ -42,6 +45,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	
 	
 	private final ApplicationStatusValidator statusValidator;
+	
+	private static final Logger logger=LoggerFactory.getLogger(JobApplicationServiceImpl.class);
 
 	
 	
@@ -76,6 +81,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		application.setJob(job);
 		application.setStatus(ApplicationStatus.APPLIED);
 		applicationRepository.save(application);
+		logger.info("Sucessfully applied for job {} by candidate {}",job.getId(),candidate.getId());
 	}
 
 	@Override
@@ -86,7 +92,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 				.orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
 		List<JobApplication> applications = applicationRepository.findByCandidate_Id(candidate.getId());
-
+		logger.info("Application Fetching by Candidate {}",candidate.getId());
 		return applications.stream().map(jobApplicationMapper::toAppliedJobDTO).toList();
 	}
 
@@ -122,19 +128,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
 		Job job = jobRepository.findById(jobId).orElseThrow(() -> new ResourceNotFoundException("Job not available"));// sorry
 																														// i
-																														// am
-																														// unable
-																														// to
-																														// understand
-																														// how
-																														// to
-																														// find
-																														// rucruter
+																											// rucruter
 		User owner = job.getCreatedBy();
 		if (!owner.getId().equals(recruiter.getId())) {
 			throw new OperationNotAllowedException("You are not allowed to view applicants of this job.");
 		}
-
+		
 		List<JobApplication> applications = applicationRepository.findByJob_Id(jobId);
 
 		return applications.stream().map(jobApplicationMapper::toApplicantDTO).toList();
@@ -163,7 +162,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		
 		statusValidator.validate(currentStatus, newStatus);
 		application.setStatus(newStatus);
+		logger.info("Recruter :{} changeng status from {} to {}",recruiter.getId(),currentStatus,newStatus);
 		applicationRepository.save(application);
+		logger.info(
+		        "Application {} status successfully changed to {}",
+		        applicationId,
+		        newStatus);
 	}
 
 }
